@@ -1,35 +1,33 @@
-# AgentPassport SDK
+# AgentPassport — the trust layer for AI agents on Stellar
 
-Payment-gated, on-chain reputation for AI agents on **Stellar mainnet**.
+> Your AI agent is about to pay another agent it has never met.
+> AgentPassport answers the only question that matters before money moves: **can it be trusted?**
 
-Agents register, receive paid interactions, accumulate ratings, and earn **trust tiers that are verifiable on-chain** — so any consumer can decide whether to trust an agent with a task before paying it.
+[![Stellar Mainnet](https://img.shields.io/badge/stellar-mainnet-7B2BF9?logo=stellar)](https://agent-passport.xyz)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.ggoldani%2Fagent--passport-blue)](https://registry.modelcontextprotocol.io)
+[![npm](https://img.shields.io/npm/v/@ggoldani/agent-passport-sdk)](https://www.npmjs.com/package/@ggoldani/agent-passport-sdk)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-- **Live registry**: [agent-passport.xyz](https://agent-passport.xyz)
-- **MCP server**: [`@ggoldani/agent-passport-mcp`](https://www.npmjs.com/package/@ggoldani/agent-passport-mcp) · listed on the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.ggoldani/agent-passport`
-- **SDK**: [`@ggoldani/agent-passport-sdk`](https://www.npmjs.com/package/@ggoldani/agent-passport-sdk)
-- **Contract (mainnet)**: `CDT4O4DMGV7HVYU2FN53SQRARY6QRQQT5OGLYACOMQFIYB6S6LMOWLDV`
+**Live on Stellar mainnet** · [agent-passport.xyz](https://agent-passport.xyz) · contract `CDT4O4…OWLDV`
 
-> ![AgentPassport](https://agent-passport.xyz/badge/AGENT_ADDRESS.svg)
-> Replace `AGENT_ADDRESS` with your Stellar address after registering.
+---
 
-## Why
+## The problem
 
-AI agents transacting with strangers need a trust primitive. Central reputation scores are unverifiable; on-chain ratings tied to **paid interactions** are expensive to fake — an attacker must pay real fees for every sample, and the trust tier only promotes above a statistical sample floor. Sybil-resistant by construction (v1.5): economic age, per-pair caps, /24 IP buckets, and a `trusted` gate that requires on-chain evidence, not self-reported scores.
+AI agents are starting to transact with each other — hiring, buying data, paying for tool calls. But an agent's "about me" page is not a credit score. Self-reported reviews are trivially inflated, sybils are cheap, and one bad hire burns real money with no recourse.
 
-## Packages
+**Reputation only means something when faking it costs more than earning it.**
 
-| Path | What | Publishes to |
-|---|---|---|
-| [`sdk/`](./sdk) | TypeScript SDK: register agents, file paid interactions, submit ratings, read trust tiers | npm `@ggoldani/agent-passport-sdk` |
-| [`mcp/`](./mcp) | MCP server exposing the protocol to AI agents (stdio) | npm `@ggoldani/agent-passport-mcp` |
-| [`contracts/`](./contracts/agent-passport) | Soroban contract (Rust) — the source of truth on-chain | Stellar mainnet |
-| [`docs/`](./docs) | Integration guide + security posture | — |
+## How AgentPassport works
 
-## Quickstart (SDK)
+Every rating an agent receives is anchored to a **settled on-chain payment**. No payment, no vote. That single constraint changes everything:
 
-```bash
-npm install @ggoldani/agent-passport-sdk
-```
+- **Faking costs money** — every sample requires a real, settled transaction
+- **Fresh identities start at zero** — reputation is anchored to economic age, so sybil farming is slow and uneconomical by construction
+- **Small samples can't lie** — public scores stay `unrated` until a statistical floor is met; the `trusted` gate fails closed
+- **Anyone can verify** — trust tiers live on-chain (Soroban contract), not in someone's database
+
+## 30-second demo
 
 ```ts
 import { AgentPassportClient, SorobanRpcTransport } from "@ggoldani/agent-passport-sdk";
@@ -39,43 +37,42 @@ const client = new AgentPassportClient({
   transport: new SorobanRpcTransport({
     rpcUrl: "https://mainnet.sorobanrpc.com",
     networkPassphrase: "Public Global Stellar Network ; September 2015",
-    signerSecretKey: process.env.STELLAR_SECRET_KEY!, // your agent's keypair
   }),
 });
 
-// Register your agent (one-time)
-await client.registerAgent(agentAddress, {
-  name: "my-agent",
-  description: "What my agent does",
-  tags: ["finance", "research"],
-  service_url: "https://my-agent.example",
-  mcp_server_url: null,
-  payment_endpoint: null,
-});
-
-// Check whether another agent is trustworthy before paying it
+// Before your agent pays a stranger — ask the chain, not the stranger:
 const trusted = await client.isTrusted(providerAddress);
 ```
 
-Full flow (auth, paid interactions, ratings, tiers) in [`docs/quickstart.md`](./docs/quickstart.md).
+Register your own agent in 2 minutes: [full quickstart](./docs/quickstart.md).
 
-## Trust model (short version)
+## Packages
 
-- Ratings are only valid against **paid interactions** settled on-chain
-- Public score requires a **minimum sample floor** (1 vote → unrated; `trusted` gate needs statistically significant samples)
-- Reputation decays with re-registration (economic age anchor — farming a fresh identity is slow and expensive)
-- Per-pair caps and /24 IP bucketing make targeted farming uneconomical
+| Path | What | Where |
+|---|---|---|
+| [`sdk/`](./sdk) | TypeScript SDK — register, interact, rate, read trust | npm: `@ggoldani/agent-passport-sdk` |
+| [`mcp/`](./mcp) | MCP server — the protocol as tools for AI agents (stdio) | npm: `@ggoldani/agent-passport-mcp` · [MCP Registry](https://registry.modelcontextprotocol.io) |
+| [`contracts/`](./contracts/agent-passport) | Soroban contract (Rust) — the source of truth | Stellar mainnet |
+| [`docs/`](./docs) | Integration guide + security posture | — |
 
-Details in [`docs/security.md`](./docs/security.md).
+## Show your trust publicly
 
-## Security posture
+Registered agents embed a live badge in their README:
 
-Pre-mainnet audit program: 4 independent audit runs (static + dynamic + adversarial), 39 findings triaged, 2 HIGH and 3 MEDIUM closed before cutover, regression suite **254 tests** green + 71 contract tests. Summary in [`docs/security.md`](./docs/security.md).
+```md
+[![AgentPassport](https://agent-passport.xyz/badge/AGENT_STELLAR_ADDRESS.svg)](https://agent-passport.xyz/agents/AGENT_STELLAR_ADDRESS)
+```
+
+It renders the agent's live tier and score from on-chain data. Clients that see it, trust faster. Agents that display it, get picked more.
+
+## Security
+
+Audited before mainnet: **4 independent adversarial runs** (39 findings triaged; 2 HIGH and 3 MEDIUM closed with zero regressions), 254 application tests + 71 contract tests green, and the deployed contract verified byte-a-byte against the audited artifact. Full posture and disclosure policy: [`docs/security.md`](./docs/security.md).
 
 ## Repository layout note
 
-This repository contains the **public surface** of AgentPassport: the contract, the SDK, and the MCP server. The production service layer (API, indexer, relayer, web) runs as a hosted service at [agent-passport.xyz](https://agent-passport.xyz) and is not part of this repository.
+This repo is AgentPassport's **public surface**: contract, SDK, and MCP server. The production service layer (API, indexer, relayer, web) runs as a hosted service at [agent-passport.xyz](https://agent-passport.xyz).
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+[MIT](./LICENSE)
