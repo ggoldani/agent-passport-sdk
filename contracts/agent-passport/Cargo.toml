@@ -1,0 +1,20 @@
+[package]
+name = "agent-passport"
+version = "0.0.0"
+edition = "2021"
+publish = false
+rust-version = "1.84.0"
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = "=25.3.0"
+
+[dev-dependencies]
+soroban-sdk = { version = "=25.3.0", features = ["testutils"] }
+
+[profile.release]
+# Auditoria 24/10 (F3): wraps silenciosos em release corrompem total_economic_volume.
+overflow-checks = true

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ggoldani/agent-passport",
+  "title": "AgentPassport",
+  "description": "MCP server for AgentPassport: registration, paid interactions, ratings and on-chain trust tiers.",
+  "websiteUrl": "https://agent-passport.xyz",
+  "repository": {
+    "url": "https://github.com/ggoldani/agent-passport-sdk,
+    "source": "github",
+    "subfolder": "tools/agent-passport-mcp"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@ggoldani/agent-passport-mcp",
+      "version": "0.2.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "STELLAR_NETWORK",
+          "description": "Stellar network (testnet or mainnet)",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "testnet"
+        },
+        {
+          "name": "STELLAR_CONTRACT_ID",
+          "description": "Deployed AgentPassport contract ID (C...)",
+          "isRequired": true,
+          "isSecret": false,
+          "default": "CAYIR5ON6NDKCQ2KLPFHDJTNKEQHSTJP3ZBMRVV4QPEEAI5ZGLN4A7VQ"
+        },
+        {
+          "name": "STELLAR_RPC_URL",
+          "description": "Soroban RPC URL (defaults to the network default)",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "STELLAR_SECRET_KEY",
+          "description": "Stellar secret key (S...) — only for write/admin operations; leave unset for read-only",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "AGENTPASSPORT_API_URL",
+          "description": "AgentPassport REST API base URL used by the bridge tools",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "https://agent-passport.xyz"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "ap_get_agent",
+      "description": "Fetch agent profile by address"
+    },
+    {
+      "name": "ap_list_agents",
+      "description": "Paginated agent list"
+    },
+    {
+      "name": "ap_get_config",
+      "description": "Contract configuration"
+    },
+    {
+      "name": "ap_get_relayers",
+      "description": "Authorized relayers"
+    },
+    {
+      "name": "ap_get_rating",
+      "description": "Rating for an interaction"
+    },
+    {
+      "name": "ap_list_agent_interactions",
+      "description": "Interaction history"
+    },
+    {
+      "name": "ap_register_agent",
+      "description": "Register new agent"
+    },
+    {
+      "name": "ap_update_profile",
+      "description": "Update agent profile"
+    },
+    {
+      "name": "ap_deregister_agent",
+      "description": "Remove agent"
+    },
+    {
+      "name": "ap_register_interaction",
+      "description": "Record interaction"
+    },
+    {
+      "name": "ap_submit_rating",
+      "description": "Rate an interaction (1-100)"
+    },
+    {
+      "name": "ap_add_relayer",
+      "description": "Authorize relayer"
+    },
+    {
+      "name": "ap_remove_relayer",
+      "description": "Revoke relayer"
+    },
+    {
+      "name": "ap_transfer_admin",
+      "description": "Initiate admin transfer"
+    },
+    {
+      "name": "ap_accept_admin",
+      "description": "Accept admin transfer"
+    },
+    {
+      "name": "ap_cancel_admin_transfer",
+      "description": "Cancel pending transfer"
+    },
+    {
+      "name": "ap_init",
+      "description": "Initialize contract"
+    },
+    {
+      "name": "agent_search",
+      "description": "Full-text agent search with filters"
+    },
+    {
+      "name": "agent_analytics",
+      "description": "Volume, score trajectory, rating breakdown"
+    },
+    {
+      "name": "agent_badge_stats",
+      "description": "Trust badge data"
+    },
+    {
+      "name": "agent_trust_check",
+      "description": "Quick trust verification"
+    },
+    {
+      "name": "inbox_list",
+      "description": "Pending inbox messages for an agent (verified events: payments received, ratings, profile changes)"
+    },
+    {
+      "name": "inbox_ack",
+      "description": "Acknowledge an inbox message after processing"
+    },
+    {
+      "name": "subscribe",
+      "description": "Subscribe an agent to event types (or * for all)"
+    },
+    {
+      "name": "health",
+      "description": "MCP server status check"
+    }
+  ]
+}

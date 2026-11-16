@@ -1,0 +1,17 @@
+# Node
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# Rust
+contracts/agent-passport/target/
+
+# Env & secrets
+.env
+.env.*
+*.key
+*.secret
+
+# OS
+.DS_Store

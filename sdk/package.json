@@ -1,0 +1,40 @@
+{
+  "name": "@ggoldani/agent-passport-sdk",
+  "version": "0.2.0",
+  "description": "TypeScript SDK for the Agent Passport trust registry on Stellar/Soroban",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": { "*": { "*": ["./dist/*"] } },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^15.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["stellar", "soroban", "agent", "trust", "reputation", "mcp", "agent-passport"],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggoldani/agent-passport-sdkgit",
+    "directory": "src/sdk"
+  }
+}
