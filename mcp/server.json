@@ -5,7 +5,7 @@
   "description": "MCP server for AgentPassport: registration, paid interactions, ratings and on-chain trust tiers.",
   "websiteUrl": "https://agent-passport.xyz",
   "repository": {
-    "url": "https://github.com/ggoldani/agent-passport-sdk,
+    "url": "https://github.com/ggoldani/agent-passport-sdk",
     "source": "github",
     "subfolder": "tools/agent-passport-mcp"
   },

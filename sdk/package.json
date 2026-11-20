@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ggoldani/agent-passport-sdkgit",
+    "url": "git+https://github.com/ggoldani/agent-passport-sdk",
     "directory": "src/sdk"
   }
 }
